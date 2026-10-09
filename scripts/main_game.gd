@@ -77,3 +77,18 @@ func _input(event):
 
 func show_game_over():
 	print("Game Over! Final Score: ", score)
+	
+# Test methods for validation
+func _test_game_initialization():
+	print("Testing game initialization...")
+	assert($Player != null, "Player node should exist")
+	assert($GameArea != null, "GameArea node should exist")
+	print("Game initialization test passed!")
+
+func _test_pipe_spawning():
+	print("Testing pipe spawning...")
+	var initial_pipe_count = pipes.size()
+	spawn_pipe()
+	var new_pipe_count = pipes.size()
+	assert(new_pipe_count == initial_pipe_count + 1, "Pipe count should increase by one")
+	print("Pipe spawning test passed!")
