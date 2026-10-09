@@ -9,9 +9,13 @@ func _ready():
 	update_score()
 
 func update_score():
-	# Update the score display (to be implemented)
-	pass
+	# Update the score display
+	$ScoreLabel.text = "Score: " + str(current_score)
 
 func _on_RestartButton_pressed():
 	# Return to main game scene
 	get_tree().change_scene_to_file("res://scenes/main_scene.tscn")
+
+func _on_MenuButton_pressed():
+	# Return to main menu scene (if we had one)
+	get_tree().change_scene_to_file("res://scenes/menu_scene.tscn")

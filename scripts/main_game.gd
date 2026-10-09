@@ -1,70 +1,79 @@
 extends Node2D
 
-# Main game controller for Flappy Gary
-# This script will handle the core gameplay mechanics
+# Main gameplay script for Flappy Gary
 
-@export var gravity: float = 500.0
-@export var jump_force: float = -300.0
-@export var game_speed: float = 100.0
-
-var player_velocity: Vector2 = Vector2.ZERO
-var is_game_over: bool = false
-var score: int = 0
-
-@onready var player = $GameArea/Player
-@onready var game_area = $GameArea
+var score = 0
+var game_over = false
+var pipes = [] # Keep track of pipes for collision detection
+var pipe_timer = 0
+var pipe_interval = 1.5 # Time between pipe spawns in seconds
 
 func _ready():
-	# Initialize the game
 	print("Flappy Gary game ready!")
 	_initialize_game()
 
 func _initialize_game():
-	# Reset game state
-	player_velocity = Vector2.ZERO
-	is_game_over = false
 	score = 0
+	game_over = false
+	$Player.position = Vector2(100, 300)
 	
-	# Position player at start
-	player.position = Vector2(100, 300)
+	# Clear existing pipes
+	for pipe in pipes:
+		if pipe != null and pipe.is_inside_tree():
+			pipe.queue_free()
+	pipes.clear()
+	
+	# Reset timer
+	pipe_timer = 0
 
 func _process(delta):
-	if not is_game_over:
+	if not game_over:
 		# Apply gravity
-		player_velocity.y += gravity * delta
+		$Player.position.y += 500 * delta
 		
-		# Update player position
-		player.position += player_velocity * delta
+		# Update pipe timer and spawn pipes
+		pipe_timer += delta
+		if pipe_timer >= pipe_interval:
+			spawn_pipe()
+			pipe_timer = 0
+			
+		# Check for collisions with pipes, ground or ceiling
+		check_collisions()
+	
+	elif game_over:
+		# Allow restart on tap even if game over  
+		if Input.is_action_just_pressed("ui_select"):
+			_initialize_game()
+
+func spawn_pipe():
+	var pipe = preload("res://scenes/pipe.tscn").instantiate()
+	pipe.position.x = 800 # Start off-screen to the right
+	pipe.position.y = randf_range(150, 450) # Random vertical position
+	add_child(pipe)
+	pipes.append(pipe)
+
+func check_collisions():
+	# Check ground and ceiling collision
+	if $Player.position.y >= 600 or $Player.position.y <= 0:
+		game_over = true
+		show_game_over()
+		return
 		
-		# Check for game over conditions
-		check_game_over()
+	# Simple collision detection with pipes - this is a basic approach
+	# A proper implementation would use areas/trigger collisions
+	var player_rect = $Player.get_global_rect()
+	
+	for pipe in pipes:
+		if pipe != null and pipe.is_inside_tree():
+			# Check if player intersects with pipe area
+			if player_rect.intersects(pipe.get_global_rect()):
+				game_over = true
+				show_game_over()
 
 func _input(event):
-	if event.is_action_pressed("click") and not is_game_over:
-		jump()
-	elif event.is_action_pressed("restart") and is_game_over:
-		restart_game()
+	if event.is_action_just_pressed("ui_select"):
+		if not game_over:
+			$Player.position.y -= 300
 
-func jump():
-	player_velocity.y = jump_force
-
-func check_game_over():
-	# Check if player hits ground or ceiling
-	if player.position.y >= 600 or player.position.y <= 0:
-		game_over()
-		
-	# Check for collision with obstacles (to be implemented)
-
-func game_over():
-	is_game_over = true
+func show_game_over():
 	print("Game Over! Final Score: ", score)
-	
-	# Display game over screen (to be implemented)
-
-func restart_game():
-	_initialize_game()
-
-func _on_Score_Timer_timeout():
-	if not is_game_over:
-		score += 1
-		print("Score: ", score)

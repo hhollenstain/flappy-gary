@@ -1,8 +1,9 @@
-[gd_scene format=3 uid="uid://b7l2qz9h8061"]
+[gd_scene load_steps=2 format=3 uid="uid://c8gameover1"]
 
-[ext_resource type="Script" path="res://scripts/game_over.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/game_over.gd" id="1_over"]
 
 [node name="GameOverScene" type="Node2D"]
+script = ExtResource("1_over")
 
 [node name="GameOverLabel" type="Label" parent="."]
 text = "Game Over!"
@@ -25,6 +26,15 @@ anchor_bottom = 0.5
 [node name="RestartButton" type="Button" parent="."]
 text = "Play Again"
 position = Vector2(400, 350)
+size = Vector2(200, 50)
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 0.5
+anchor_bottom = 0.5
+
+[node name="MenuButton" type="Button" parent="."]
+text = "Main Menu"
+position = Vector2(400, 420)
 size = Vector2(200, 50)
 anchor_left = 0.5
 anchor_right = 0.5

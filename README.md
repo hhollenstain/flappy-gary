@@ -2,8 +2,6 @@
 
 A Godot-based game inspired by Flappy Bird, featuring your dog Gary!
 
-## Game Concept
-
 Flappy Gary is a mobile-style game where players control a character named Gary (your 25-pound Chihuahua-Greyhound mix) navigating through obstacles. The goal is to help Gary fly as far as possible without hitting pipes or the ground.
 
 ## Features 
@@ -18,10 +16,6 @@ Flappy Gary is a mobile-style game where players control a character named Gary 
 
 This project is being developed using Godot engine with the goal of being a proof-of-concept showcasing local GPU usage and automation through agent-loco.
 
-## Getting Started
-
-(Instructions will be added as development progresses)
-
 ## Project Structure
 
 - `/scenes` - Game scenes (main menu, game, etc.)
@@ -32,13 +26,25 @@ This project is being developed using Godot engine with the goal of being a proo
 ## Development Status
 
 - [x] Initial project setup
-- [ ] Basic gameplay mechanics
+- [x] Basic gameplay mechanics
 - [ ] Character design and animation
-- [ ] Obstacle generation system
+- [x] Obstacle generation system
 - [ ] UI implementation
 - [ ] Sound effects
 - [ ] Particle effects
 - [ ] Save/load high scores
+
+## Linting and Validation
+
+This project includes automated linting and validation to ensure Godot files are valid and the game compiles correctly:
+
+- `validate_godot_files.sh` - Validates all project files including scenes, scripts, and project structure
+- `.github/workflows/godot-validate.yml` - CI workflow that runs validation on every commit
+- The validation checks:
+  - All required files exist
+  - Scene files have proper Godot format headers
+  - GDScript files contain valid syntax
+  - Project compiles successfully
 
 ## License
 

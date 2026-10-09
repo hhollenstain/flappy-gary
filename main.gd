@@ -1,18 +1,10 @@
 extends Node2D
 
-# Main game script
-# This will handle the core game logic for Flappy Gary
+# Main entry point for Flappy Gary game
+# This initializes and controls the overall game flow
 
 func _ready():
 	print("Flappy Gary game initialized!")
 	
-	# Initialize game state
-	_initialize_game()
-
-func _initialize_game():
-	# Set up initial game state
-	pass
-
-func _process(delta):
-	# Main game loop
-	pass
+	# Load the main game scene
+	get_tree().change_scene_to_file("res://scenes/main_scene.tscn")

@@ -1,1 +1,15 @@
+# Godot
+export_presets.cfg
+project.godot
+*.godot
+*.tscn
+*.tres
+*.gd
+
+# Godot editor cache
+.godot/
+.cache/
+
+# Local settings
+*.local
 .loco/

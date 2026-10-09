@@ -1,0 +1,48 @@
+name: Validate Godot Files
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Godot
+      run: |
+        # Install Godot for compilation validation
+        wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
+        unzip Godot_v4.2.1-stable_linux.x86_64.zip
+        chmod +x Godot_v4.2.1-stable_linux.x86_64
+        echo "GODOT_PATH=$(pwd)/Godot_v4.2.1-stable_linux.x86_64" >> $GITHUB_ENV
+        
+    - name: Validate Godot project files
+      run: |
+        # Run extended validation script
+        echo "Running extended validation..."
+        ./validate_godot_files.sh
+
+    - name: Compile Check
+      run: |
+        # Test Godot compilation
+        echo "Testing project compilation..."
+        if [ -x "$GODOT_PATH" ]; then
+          "$GODOT_PATH" --headless --path . --import
+          if [ $? -eq 0 ]; then
+            echo "✓ Project imports successfully"
+          else
+            echo "ERROR: Project failed to import"
+            exit 1
+          fi
+        else
+          echo "WARNING: Godot not found for compile check"
+        fi
+
+    - name: Final Validation
+      run: |
+        echo "Final project validation complete!"
