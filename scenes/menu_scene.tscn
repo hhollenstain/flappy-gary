@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://b7l2qz9h8061"]
+
+[ext_resource type="Script" path="res://scripts/menu.gd" id="1"]
+
+[node name="MenuScene" type="Node2D"]
+
+[node name="TitleLabel" type="Label" parent="."]
+text = "Flappy Gary"
+position = Vector2(400, 150)
+size = Vector2(300, 50)
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 0.5
+anchor_bottom = 0.5
+
+[node name="StartButton" type="Button" parent="."]
+text = "Start Game"
+position = Vector2(400, 300)
+size = Vector2(200, 50)
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 0.5
+anchor_bottom = 0.5
+
+[node name="Instructions" type="Label" parent="."]
+text = "Tap to make Gary fly!\nAvoid the pipes!"
+position = Vector2(400, 400)
+size = Vector2(300, 100)
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 0.5
+anchor_bottom = 0.5

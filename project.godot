@@ -1,0 +1,26 @@
+[application]
+
+config/version="1.0"
+config/name="Flappy Gary"
+runnable=true
+
+[graphics]
+
+version=1
+
+[input]
+
+click="left_mouse_button"
+restart="r"
+
+[autoload]
+
+Main="*res://main.gd"
+
+[render]
+
+version=1
+
+[scenes]
+
+main_scene="res://scenes/main_scene.tscn"
