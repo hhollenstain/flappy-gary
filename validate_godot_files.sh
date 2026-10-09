@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Validate the Godot project with the Godot 4 command line.
-# --no-window and --check are Godot 3 flags. Godot 4 uses --headless,
-# and --check-only must be paired with --script.
+# --check-only must be paired with --script. It can print SCRIPT ERROR
+# and still exit 0, so the output is checked too. Tests run in Godot.
 
 set -u
 
@@ -20,8 +20,10 @@ if [ ! -f "project.godot" ]; then
 fi
 echo "✓ project.godot file exists"
 
-# Validate main scene reference in project.godot
 main_scene=$(sed -n 's/^main_scene="res:\/\/\(.*\)"/\1/p' project.godot | head -1)
+if [ -z "$main_scene" ]; then
+    main_scene=$(sed -n 's/^run\/main_scene="res:\/\/\(.*\)"/\1/p' project.godot | head -1)
+fi
 if [ -z "$main_scene" ]; then
     fail "No main scene reference found in project.godot"
 fi
@@ -30,29 +32,18 @@ if [ ! -f "$main_scene" ]; then
 fi
 echo "✓ Main scene file exists: $main_scene"
 
-# Validate all required scripts exist and are properly formatted for linting
-required_scripts=(
-    "main.gd"
-    "scripts/main_game.gd"
-    "scripts/menu.gd"
-    "scripts/game_over.gd"
-)
+scripts=()
+while IFS= read -r script; do
+    scripts+=("$script")
+done < <(find . -name '*.gd' -not -path './.godot/*' | sed 's|^\./||' | sort)
 
-for script in "${required_scripts[@]}"; do
-    if [ ! -f "$script" ]; then
-        fail "Required script not found: $script"
-    fi
-    echo "✓ Required script exists: $script"
-    
-    # Basic linting check for GDScript files - check that they are valid text files
-    if [ -s "$script" ]; then
-        echo "  - Script has content: $script"
-    else
-        echo "  - WARNING: Script is empty: $script"
-    fi
+if [ "${#scripts[@]}" -eq 0 ]; then
+    fail "No GDScript files found"
+fi
+for script in "${scripts[@]}"; do
+    echo "✓ Script file exists: $script"
 done
 
-# Validate all scene files are properly formatted with Godot headers for linting
 scene_count=0
 for scene_file in scenes/*.tscn; do
     if [ ! -f "$scene_file" ]; then
@@ -69,82 +60,54 @@ if [ "$scene_count" -eq 0 ]; then
     fail "No scene files found in scenes/"
 fi
 
-# Collect all GDScript files for syntax checking (without actually running full compilation)
-scripts=()
-while IFS= read -r script; do
-    scripts+=("$script")
-done < <(find . -name '*.gd' -not -path './.godot/*' | sed 's|^\./||' | sort)
-
-if [ "${#scripts[@]}" -eq 0 ]; then
-    fail "No GDScript files found"
-fi
-
-echo "✓ All Godot project files exist and have proper structure for linting"
-
-# Additional validation for project structure to ensure the game can compile (linting focused)
-echo "Validating that project structure is ready for compilation..."
-
-# Verify all scenes and scripts mentioned in project are present
-# Check basic file existence 
-echo "✓ All necessary project components verified"
-
-# Try to find Godot for compilation check
-if command -v godot >/dev/null 2>&1; then
-    echo "✓ Godot engine found at: $(command -v godot)"
-    GODOT_AVAILABLE="yes"
-elif [ -n "${GODOT_PATH:-}" ] && [ -x "$GODOT_PATH" ]; then
-    echo "✓ Godot engine found at specified path: $GODOT_PATH"
-    GODOT_AVAILABLE="yes"
+if [ -n "${GODOT_PATH:-}" ] && [ -x "$GODOT_PATH" ]; then
+    godot_bin="$GODOT_PATH"
+elif [ -n "${GODOT:-}" ] && [ -x "$GODOT" ]; then
+    godot_bin="$GODOT"
+elif command -v godot >/dev/null 2>&1; then
+    godot_bin=$(command -v godot)
 else
-    echo "ℹ Godot engine not found, proceeding with basic linting validation only"
-    GODOT_AVAILABLE="no"
+    fail "Godot was not found. Install Godot 4 or set GODOT_PATH."
 fi
 
-if [ "$GODOT_AVAILABLE" = "yes" ]; then
-    echo "Testing project compilation..."
-    if command -v godot >/dev/null 2>&1; then
-        godot --headless --path . --import
-        if [ $? -eq 0 ]; then
-            echo "✓ Project imports successfully"
-        else
-            fail "Project failed to import"
-        fi
-    elif [ -x "$GODOT_PATH" ]; then
-        "$GODOT_PATH" --headless --path . --import
-        if [ $? -eq 0 ]; then
-            echo "✓ Project imports successfully"
-        else
-            fail "Project failed to import"
-        fi
+GODOT_OUTPUT=""
+
+godot_failed() {
+    printf '%s\n' "$1" | grep -E 'SCRIPT ERROR:|Parse Error:|Failed to load script|Couldn'"'"'t detect whether to run|GODOT TESTS FAILED|^FAIL:' >/dev/null
+}
+
+run_godot() {
+    local output status
+    output=$("$godot_bin" "$@" 2>&1)
+    status=$?
+    GODOT_OUTPUT=$output
+    printf '%s\n' "$output"
+    if [ "$status" -ne 0 ] || godot_failed "$output"; then
+        return 1
     fi
-fi
+    return 0
+}
 
-# Add code quality checks for the project 
-echo "Performing additional linting quality checks..."
-# Ensure each script has valid Godot GDScript syntax by checking for common syntax errors
+echo "Checking GDScript syntax using Godot..."
 for script in "${scripts[@]}"; do
-    if [[ "$script" == *.gd ]]; then
-        echo "Checking $script syntax..." 
-        
-        # Simple syntax checks that would cause compilation to fail in Godot:
-        # Check for unmatched brackets, etc.
-        if grep -q '{[^}]*$' "$script" 2>/dev/null; then
-            echo "  - Potential bracket mismatch detected in $script"
-        fi
-
-        if grep -q '^[[:space:]]*func[[:space:]]\+[a-zA-Z_][a-zA-Z0-9_]*' "$script"; then
-            echo "  - Function definition found in $script"
-        fi
+    if ! run_godot --headless --path . --check-only --script "$script"; then
+        fail "Syntax check failed for: $script"
     fi
+    echo "✓ Syntax check passed for: $script"
 done
 
-# Run our specific tests if available  
-echo "Running new test suite..."
-if [ -f "scripts/test.gd" ]; then
-    echo "✓ Test script found"
-    # This is a placeholder - actual Godot script execution would require running in the Godot engine
-    echo "Tests would be executed in Godot engine environment"
+echo "Running Godot tests..."
+if ! run_godot --headless --path . --script res://scripts/test.gd; then
+    fail "Godot tests failed"
 fi
+if ! printf '%s\n' "$GODOT_OUTPUT" | grep -q "GODOT TESTS PASSED"; then
+    fail "Godot tests did not report success"
+fi
+echo "✓ Godot tests passed"
 
-echo "Godot project linting checks completed successfully!"
-exit 0
+echo "Importing the Godot project..."
+if ! run_godot --headless --path . --import; then
+    fail "Project failed to import"
+fi
+echo "✓ Godot project imports successfully"
+echo "Godot project validation completed successfully!"

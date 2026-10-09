@@ -49,3 +49,39 @@ This project includes automated linting and validation to ensure Godot files are
 ## License
 
 This project is currently in development and will be licensed once finalized.
+
+## Working on this Project
+
+### Development Setup
+1. Clone the repository
+2. Ensure Godot 4.x is installed and accessible from your terminal
+3. Run `bash validate_godot_files.sh` to verify the project structure and validate all files
+
+### Testing the Game
+- **Manual Testing**: Open the project in Godot editor (`godot`) and test different scenes:
+  - `scenes/menu_scene.tscn` - Main menu with start/play button
+  - `scenes/main_scene.tscn` - Gameplay scene
+  - `scenes/settings_scene.tscn` - Settings menu with volume slider and difficulty toggle
+
+- **Automated Testing**: Run the validation script that checks:
+  - All Godot files exist with proper format
+  - Scripts pass syntax validation
+  - Project compiles without errors
+  - Tests in `scripts/test.gd` pass successfully
+
+### Playing Test Instructions
+1. Launch Godot from terminal: `godot`
+2. Open project `project.godot`
+3. Navigate to scenes using the scene tree or Scene menu:
+   - Play `scenes/menu_scene.tscn` to start
+   - Use settings button in menu to access `scenes/settings_scene.tscn`  
+   - Test volume and difficulty controls in settings
+4. Test gameplay by starting from main menu and controlling Gary with tap/keyboard input
+
+## Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Test your changes with `validate_godot_files.sh`
+4. Submit a pull request with clear commit messages
