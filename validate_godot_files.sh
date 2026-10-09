@@ -141,9 +141,9 @@ done
 # Run our specific tests if available  
 echo "Running new test suite..."
 if [ -f "scripts/test.gd" ]; then
-    echo "✓ Test script found, would run tests here"
-    # Actually run the test function if possible (would need to be run in Godot)
-    # This is just to validate that the file exists
+    echo "✓ Test script found"
+    # This is a placeholder - actual Godot script execution would require running in the Godot engine
+    echo "Tests would be executed in Godot engine environment"
 fi
 
 echo "Godot project linting checks completed successfully!"
