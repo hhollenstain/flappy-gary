@@ -11,6 +11,7 @@ Flappy Gary is a mobile-style game where players control a character named Gary 
 - Randomly generated obstacle patterns
 - Score tracking and high score system
 - Simple, cute visual style
+- Settings functionality for volume and difficulty
 
 ## Development Progress
 
@@ -45,6 +46,7 @@ This project includes automated linting and validation to ensure Godot files are
   - Scene files have proper Godot format headers
   - GDScript files contain valid syntax
   - Project compiles successfully
+  - Automated tests in `scripts/test.gd` pass
 
 ## License
 
@@ -77,6 +79,7 @@ This project is currently in development and will be licensed once finalized.
    - Use settings button in menu to access `scenes/settings_scene.tscn`  
    - Test volume and difficulty controls in settings
 4. Test gameplay by starting from main menu and controlling Gary with tap/keyboard input
+5. Try different difficulty levels to see how they affect gameplay
 
 ## Contributing
 

@@ -47,6 +47,7 @@ Flappy Gary is a Godot-based game inspired by Flappy Bird, featuring your dog Ga
 - `/scripts` - GDScript files for game logic and UI
 - `/assets` - Images, sounds, fonts, etc.
 - `/validate_godot_files.sh` - Validation script to check Godot files
+- `/scripts/test.gd` - Automated test script for the project
 
 ## Manual Testing for Users
 
@@ -67,6 +68,7 @@ Flappy Gary is a Godot-based game inspired by Flappy Bird, featuring your dog Ga
    - Verify that you can control Gary (tap/press spacebar)
    - Check that obstacles spawn correctly
    - Test scoring system
+   - Test game over detection and screen
 
 2. **Settings Testing**:
    - Access settings from the main menu
@@ -84,6 +86,7 @@ Flappy Gary is a Godot-based game inspired by Flappy Bird, featuring your dog Ga
 - If Godot fails to load textures, check file paths in project settings
 - If scripts fail to run, verify syntax using `validate_godot_files.sh` 
 - If scenes don't appear correctly, ensure scene files have proper Godot headers
+- Make sure all referenced resources exist and have correct paths
 
 ## Automated Testing
 
@@ -92,6 +95,7 @@ The project uses automated validation through `validate_godot_files.sh` which:
 - Validates scene file formats with proper Godot headers
 - Ensures GDScript files pass syntax validation  
 - Tests that the entire project compiles correctly in Godot
+- Runs automated tests defined in `scripts/test.gd`
 
 ## CI/CD Integration
 
@@ -104,3 +108,4 @@ The project includes a GitHub Actions workflow (.github/workflows/godot-validate
 3. Keep changes focused on single features or fixes
 4. Document any breaking changes in commit messages
 5. Ensure all scenes have proper Godot format headers
+6. Test that existing functionality still works after your changes
