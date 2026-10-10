@@ -1,6 +1,12 @@
 extends Node2D
 
 # Main gameplay script for Flappy Gary
+# This script manages the core game logic and handles signal connections.
+# Signal connections are used to coordinate between different components:
+# - Player input handling (via _input function)
+# - Game state management (game over, restart, initialization)  
+# - Score and level updates (via update_score and increment_level functions)
+# - Pipe passing detection (via on_pipe_passed function)
 class_name MainGame
 
 var score = 0
@@ -17,6 +23,8 @@ var player_velocity = Vector2(0, 0)
 var ground_position = 600
 
 func _ready():
+	# Signal connection: This function initializes the game and sets up initial state
+	# Connected to scene ready event when the game starts
 	print("Flappy Gary game ready!")
 	_initialize_game()
 
@@ -90,6 +98,8 @@ func check_collisions():
 				return
 
 func _input(event):
+	# Signal connection: This function handles player input events
+	# Connected to the Input event system for jump actions
 	if event.is_action_just_pressed("ui_select"):
 		if not game_over:
 			player_velocity.y = jump_force # Apply upward force
@@ -98,6 +108,8 @@ func _input(event):
 			_initialize_game()
 
 func show_game_over():
+	# Signal connection: This function triggers the game over state
+	# Should be connected to collision detection or game over conditions 
 	print("Game Over! Final Score: ", score)
 	var scene = get_tree().change_scene_to_file("res://scenes/game_over_scene.tscn")
 	var game_over_scene = get_tree().current_scene
@@ -105,6 +117,8 @@ func show_game_over():
 		game_over_scene.set_final_score(score)
 
 func update_score(points: int):
+	# Signal connection: This function updates the score display and can trigger level up
+	# Should be connected to pipe passing events or scoring signals
 	score += points
 	$ScoreLabel.text = "Score: " + str(score)
 	
@@ -113,6 +127,8 @@ func update_score(points: int):
 		increment_level()
 
 func increment_level():
+	# Signal connection: This function handles level progression and difficulty adjustments
+	# Should be connected to score update signals or level up events
 	level += 1
 	pipe_interval = max(0.5, pipe_interval - 0.1)  # Speed up pipes slightly each level  
 	gravity = gravity + 20.0  # Increase gravity for more difficulty
@@ -124,6 +140,7 @@ func increment_level():
 	print("Level Up! Now at Level ", level)
 
 # Function called when a pipe is passed to update score
+# Signal connection: This function should be connected to pipe passed signals from pipe scenes
 func on_pipe_passed():
 	passed_pipes += 1
 	update_score(10) # Give 10 points for passing a pipe
