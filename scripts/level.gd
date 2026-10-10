@@ -3,9 +3,9 @@ extends Node
 # Level handling for Flappy Gary
 class_name LevelManager
 
-var current_level = 1
-var score = 0
-var difficulty_multiplier = 1.0
+@export var current_level = 1
+@export var score = 0
+@export var difficulty_multiplier = 1.0
 
 func _ready():
 	pass

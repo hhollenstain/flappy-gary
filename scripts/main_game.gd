@@ -9,18 +9,18 @@ extends Node2D
 # - Pipe passing detection (via on_pipe_passed function)
 class_name MainGame
 
-var score = 0
-var game_over = false
-var level = 1
-var pipes = [] # Keep track of pipes for collision detection
-var pipe_timer = 0
-var pipe_interval = 1.5 # Time between pipe spawns in seconds
-var gravity = 500.0
-var jump_force = -300.0
-var level_manager = null
-var passed_pipes = 0 # Keep track of pipes passed for scoring
-var player_velocity = Vector2(0, 0)
-var ground_position = 600
+@export var score = 0
+@export var game_over = false
+@export var level = 1
+@export var pipes = [] # Keep track of pipes for collision detection
+@export var pipe_timer = 0
+@export var pipe_interval = 1.5 # Time between pipe spawns in seconds
+@export var gravity = 500.0
+@export var jump_force = -300.0
+@export var level_manager = null
+@export var passed_pipes = 0 # Keep track of pipes passed for scoring
+@export var player_velocity = Vector2(0, 0)
+@export var ground_position = 600
 
 func _ready():
 	# Signal connection: This function initializes the game and sets up initial state

@@ -1,7 +1,7 @@
 extends Control
 
-var score = 0
-var high_score = 0
+@export var score = 0
+@export var high_score = 0
 
 func _ready() -> void:
 	$RestartButton.pressed.connect(_on_restart_pressed)

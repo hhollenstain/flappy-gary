@@ -1,8 +1,8 @@
 extends Control
 
-var volume := 1.0
-var difficulty := "medium"
-var difficulties: Array[String] = ["easy", "medium", "hard"]
+@export var volume := 1.0
+@export var difficulty := "medium"
+@export var difficulties: Array[String] = ["easy", "medium", "hard"]
 
 func _ready() -> void:
 	$VolumeSlider.value = volume
