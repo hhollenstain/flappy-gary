@@ -2,7 +2,7 @@
 .godot/
 .cache/
 
-# Godot editor metadata
+# Godot editor metadata (scene files must be tracked)
 .godot/editor/*
 !.godot/editor/.gdignore
 
