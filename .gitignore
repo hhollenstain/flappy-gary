@@ -2,6 +2,10 @@
 .godot/
 .cache/
 
+# Godot editor metadata
+.godot/editor/*
+!.godot/editor/.gdignore
+
 # Local settings
 *.local
 .loco/
