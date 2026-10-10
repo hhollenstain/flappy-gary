@@ -9,9 +9,15 @@ Flappy Gary is a Godot-based game inspired by Flappy Bird, featuring your dog Ga
 ## Setting Up the Development Environment
 
 ### Prerequisites
-- Godot 4.x engine installed
+- Godot 4.4-stable engine installed
 - Bash-compatible shell environment 
 - Git for version control
+
+### Version Management Note
+When updating the Godot version:
+1. Update the version in `.github/workflows/godot-validate.yml` (currently 4.4-stable)
+2. Update this documentation to reflect the new version
+3. Both local and CI builds must use the same Godot version for consistency
 
 ### Local Setup
 1. Clone the repository:
