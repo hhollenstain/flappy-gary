@@ -23,6 +23,7 @@ func _initialize_game():
 	level = 1
 	$Player.position = Vector2(100, 300)
 	$ScoreLabel.text = "Score: 0"
+	$LevelLabel.text = "Level: 1"
 	
 	# Clear existing pipes
 	for pipe in pipes:
@@ -114,3 +115,9 @@ func increment_level():
 	# Update UI to show level
 	if $LevelLabel:
 		$LevelLabel.text = "Level: " + str(level)
+
+func get_level() -> int:
+	return level
+
+func get_score() -> int:
+	return score
