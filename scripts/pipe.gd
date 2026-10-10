@@ -1,7 +1,7 @@
 extends Node2D
 
-var speed := 200.0
-var passed = false # To track if this pipe has been passed
+@export var speed := 200.0
+@export var passed = false # To track if this pipe has been passed
 
 func _process(delta: float) -> void:
 	position.x -= speed * delta
