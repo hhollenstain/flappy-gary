@@ -1,12 +1,16 @@
 extends Node2D
 
 # Main gameplay script for Flappy Gary
+class_name MainGame
 
 var score = 0
 var game_over = false
+var level = 1
 var pipes = [] # Keep track of pipes for collision detection
 var pipe_timer = 0
 var pipe_interval = 1.5 # Time between pipe spawns in seconds
+var gravity = 500.0
+var jump_force = -300.0
 
 func _ready():
 	print("Flappy Gary game ready!")
@@ -15,7 +19,9 @@ func _ready():
 func _initialize_game():
 	score = 0
 	game_over = false
+	level = 1
 	$Player.position = Vector2(100, 300)
+	$ScoreLabel.text = "Score: 0"
 	
 	# Clear existing pipes
 	for pipe in pipes:
@@ -29,7 +35,7 @@ func _initialize_game():
 func _process(delta):
 	if not game_over:
 		# Apply gravity
-		$Player.position.y += 500 * delta
+		$Player.position.y += gravity * delta
 		
 		# Update pipe timer and spawn pipes
 		pipe_timer += delta
@@ -59,13 +65,11 @@ func check_collisions():
 		show_game_over()
 		return
 		
-	# Simple collision detection with pipes - this is a basic approach
-	# A proper implementation would use areas/trigger collisions
-	var player_rect = $Player.get_global_rect()
-	
+	# Check collision with pipes using proper Area2D collision
 	for pipe in pipes:
 		if pipe != null and pipe.is_inside_tree():
-			# Check if player intersects with pipe area
+			var player_rect = $Player.get_global_rect()
+			# We'll do basic intersection check for now (more complex logic can be added later)
 			if player_rect.intersects(pipe.get_global_rect()):
 				game_over = true
 				show_game_over()
@@ -73,7 +77,11 @@ func check_collisions():
 func _input(event):
 	if event.is_action_just_pressed("ui_select"):
 		if not game_over:
-			$Player.position.y -= 300
+			$Player.position.y += jump_force
+		elif game_over:
+			# Restart when game over and space is pressed
+			_initialize_game()
 
 func show_game_over():
 	print("Game Over! Final Score: ", score)
+	get_tree().change_scene_to_file("res://scenes/game_over_scene.tscn")
