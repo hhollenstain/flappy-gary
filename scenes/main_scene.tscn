@@ -7,18 +7,28 @@ script = ExtResource("1_game")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(0, 0)
+texture = ExtResource("background_texture") # This will be set in code
 
 [node name="GameArea" type="Node2D" parent="."]
 
 [node name="Player" type="Sprite2D" parent="GameArea"]
 position = Vector2(100, 300)
+texture = ExtResource("player_texture") # This will be set in code
 
 [node name="Ground" type="Sprite2D" parent="GameArea"]
 position = Vector2(0, 600)
+texture = ExtResource("ground_texture") # This will be set in code
 
 [node name="ScoreLabel" type="Label" parent="."]
-offset_left = 250.0
-offset_top = 35.0
-offset_right = 550.0
-offset_bottom = 65.0
+position = Vector2(350, 40)
+size = Vector2(100, 30)
+anchor_left = 0.5
+anchor_top = 0.5
 text = "Score: 0"
+
+[node name="LevelLabel" type="Label" parent="."]
+position = Vector2(350, 80)
+size = Vector2(100, 30)
+anchor_left = 0.5
+anchor_top = 0.5
+text = "Level: 1"
