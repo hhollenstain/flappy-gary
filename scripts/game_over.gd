@@ -1,21 +1,17 @@
-extends Node2D
+extends Control
 
-# Game over scene controller for Flappy Gary
+var score = 0
 
-var current_score: int = 0
+func _ready() -> void:
+	$RestartButton.pressed.connect(_on_restart_pressed)
+	$MenuButton.pressed.connect(_on_menu_pressed)
 
-func _ready():
-	print("Game over screen ready!")
-	update_score()
-
-func update_score():
-	# Update the score display
-	$ScoreLabel.text = "Score: " + str(current_score)
-
-func _on_RestartButton_pressed():
-	# Return to main game scene
+func _on_restart_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/main_scene.tscn")
 
-func _on_MenuButton_pressed():
-	# Return to main menu scene (if we had one)
+func _on_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/menu_scene.tscn")
+	
+func set_final_score(final_score: int) -> void:
+	score = final_score
+	$ScoreLabel.text = "Score: " + str(score)

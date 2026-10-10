@@ -22,3 +22,10 @@ size = Vector2(100, 30)
 anchor_left = 0.5
 anchor_top = 0.5
 text = "Score: 0"
+
+[node name="LevelLabel" type="Label" parent="."]
+position = Vector2(350, 80)
+size = Vector2(100, 30)
+anchor_left = 0.5
+anchor_top = 0.5
+text = "Level: 1"

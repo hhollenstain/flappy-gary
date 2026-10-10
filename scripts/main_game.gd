@@ -11,6 +11,7 @@ var pipe_timer = 0
 var pipe_interval = 1.5 # Time between pipe spawns in seconds
 var gravity = 500.0
 var jump_force = -300.0
+var level_manager = null
 
 func _ready():
 	print("Flappy Gary game ready!")
@@ -31,6 +32,11 @@ func _initialize_game():
 	
 	# Reset timer
 	pipe_timer = 0
+	
+	# Initialize or get level manager
+	if level_manager == null:
+		level_manager = preload("res://scripts/level.gd").new()
+		level_manager.current_level = 1
 
 func _process(delta):
 	if not game_over:
@@ -84,4 +90,27 @@ func _input(event):
 
 func show_game_over():
 	print("Game Over! Final Score: ", score)
-	get_tree().change_scene_to_file("res://scenes/game_over_scene.tscn")
+	var scene = get_tree().change_scene_to_file("res://scenes/game_over_scene.tscn")
+	var game_over_scene = get_tree().current_scene
+	if game_over_scene != null and game_over_scene.has_method("set_final_score"):
+		game_over_scene.set_final_score(score)
+
+func update_score(points: int):
+	score += points
+	$ScoreLabel.text = "Score: " + str(score)
+	
+	# Check if we should level up
+	if score >= level * 100:  # Level up every 100 points
+		increment_level()
+
+func increment_level():
+	level += 1
+	pipe_interval = max(0.5, pipe_interval - 0.1)  # Speed up pipes slightly each level  
+	gravity = gravity + 20.0  # Increase gravity for more difficulty
+	
+	# Show level update (this would be better implemented in a proper visual system)
+	print("Level Up! Now at Level ", level)
+	
+	# Update UI to show level
+	if $LevelLabel:
+		$LevelLabel.text = "Level: " + str(level)
