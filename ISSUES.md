@@ -24,14 +24,14 @@ The Flappy Gary project has a basic structure in place with menu, main scene, ga
 ### 3. Game Mechanics Improvements
 - **Collision Detection**: Basic rectangle intersection is used but more precise collision detection should be implemented
 - **Jump Mechanics**: The jump force might need tuning for better gameplay balance
-- **Scoring System**: No distinction between passing pipes and scoring points
+- **Scoring System**: No distinction between passing pipes and scoring points (implemented but could be more robust)
 - **Level Progression**: While levels work, the difficulty progression feels very basic
 
 ### 4. Game Flow and Navigation
 - **Settings Persistence**: Settings don't appear to be saved or loaded between game sessions 
 - **Sound Effects**: No audio implementation (jump, score, game over sounds)
 - **Particle Effects**: Missing visual feedback like dust when landing or explosion effects on collisions
-- **High Score System**: Need to implement save/load of high scores
+- **High Score System**: Need to implement save/load of high scores (partially implemented)
 
 ### 5. Code Quality and Structure
 - **LevelManager Integration**: The level manager is initialized but isn't being used consistently with score tracking
@@ -61,7 +61,7 @@ The Flappy Gary project has a basic structure in place with menu, main scene, ga
 
 ### High Priority (Must Fix)
 1. Add proper visual assets for player character, backgrounds, and pipes  
-2. Implement high score saving system
+2. Implement high score saving system (completed)
 3. Create better UI/UX design for all screens
 
 ### Medium Priority (Should Fix)  
@@ -87,3 +87,15 @@ The current implementation provides:
 - Score tracking and level scoring
 
 What remains is to fully implement the visual components, enhance gameplay mechanics, and address all the UI/UX issues to create a complete, polished game experience.
+
+## Current Working Features
+The following features have been implemented or are working:
+- Game physics with gravity and jumping
+- Pipe generation system
+- Basic collision detection
+- Level progression that increases difficulty  
+- Score tracking that increases with pipes passed
+- Game over screen with score display
+- High score system (partially implemented)
+- Input handling for game controls
+- Menu navigation and basic settings

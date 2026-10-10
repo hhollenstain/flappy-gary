@@ -12,6 +12,9 @@ var pipe_interval = 1.5 # Time between pipe spawns in seconds
 var gravity = 500.0
 var jump_force = -300.0
 var level_manager = null
+var passed_pipes = 0 # Keep track of pipes passed for scoring
+var player_velocity = Vector2(0, 0)
+var ground_position = 600
 
 func _ready():
 	print("Flappy Gary game ready!")
@@ -21,7 +24,10 @@ func _initialize_game():
 	score = 0
 	game_over = false
 	level = 1
+	passed_pipes = 0
 	$Player.position = Vector2(100, 300)
+	$Player.position.y = 300 # Set initial position
+	player_velocity = Vector2(0, 0) # Reset velocity
 	$ScoreLabel.text = "Score: 0"
 	$LevelLabel.text = "Level: 1"
 	
@@ -41,8 +47,9 @@ func _initialize_game():
 
 func _process(delta):
 	if not game_over:
-		# Apply gravity
-		$Player.position.y += gravity * delta
+		# Apply gravity to velocity
+		player_velocity.y += gravity * delta
+		$Player.position += player_velocity * delta
 		
 		# Update pipe timer and spawn pipes
 		pipe_timer += delta
@@ -67,7 +74,7 @@ func spawn_pipe():
 
 func check_collisions():
 	# Check ground and ceiling collision
-	if $Player.position.y >= 600 or $Player.position.y <= 0:
+	if $Player.position.y >= ground_position || $Player.position.y <= 0:
 		game_over = true
 		show_game_over()
 		return
@@ -80,11 +87,12 @@ func check_collisions():
 			if player_rect.intersects(pipe.get_global_rect()):
 				game_over = true
 				show_game_over()
+				return
 
 func _input(event):
 	if event.is_action_just_pressed("ui_select"):
 		if not game_over:
-			$Player.position.y += jump_force
+			player_velocity.y = jump_force # Apply upward force
 		elif game_over:
 			# Restart when game over and space is pressed
 			_initialize_game()
@@ -100,8 +108,8 @@ func update_score(points: int):
 	score += points
 	$ScoreLabel.text = "Score: " + str(score)
 	
-	# Check if we should level up
-	if score >= level * 100:  # Level up every 100 points
+	# Check if we should level up - every 100 points
+	if score >= level * 100:
 		increment_level()
 
 func increment_level():
@@ -109,12 +117,16 @@ func increment_level():
 	pipe_interval = max(0.5, pipe_interval - 0.1)  # Speed up pipes slightly each level  
 	gravity = gravity + 20.0  # Increase gravity for more difficulty
 	
-	# Show level update (this would be better implemented in a proper visual system)
-	print("Level Up! Now at Level ", level)
-	
 	# Update UI to show level
 	if $LevelLabel:
 		$LevelLabel.text = "Level: " + str(level)
+	
+	print("Level Up! Now at Level ", level)
+
+# Function called when a pipe is passed to update score
+func on_pipe_passed():
+	passed_pipes += 1
+	update_score(10) # Give 10 points for passing a pipe
 
 func get_level() -> int:
 	return level

@@ -7,14 +7,17 @@ script = ExtResource("1_game")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(0, 0)
+texture = ExtResource("background_texture") # This will be set in code
 
 [node name="GameArea" type="Node2D" parent="."]
 
 [node name="Player" type="Sprite2D" parent="GameArea"]
 position = Vector2(100, 300)
+texture = ExtResource("player_texture") # This will be set in code
 
 [node name="Ground" type="Sprite2D" parent="GameArea"]
 position = Vector2(0, 600)
+texture = ExtResource("ground_texture") # This will be set in code
 
 [node name="ScoreLabel" type="Label" parent="."]
 position = Vector2(350, 40)
