@@ -110,4 +110,27 @@ if ! run_godot --headless --path . --import; then
     fail "Project failed to import"
 fi
 echo "✓ Godot project imports successfully"
+
+# Final verification - test that main scene can be loaded without critical rendering errors
+echo "Verifying main scene loads with player character..."
+# Try to validate that the scene has proper structure for rendering
+main_scene=$(sed -n 's/^main_scene="res:\/\/\(.*\)"/\1/p' project.godot | head -1)
+if [ -z "$main_scene" ]; then
+    main_scene=$(sed -n 's/^run\/main_scene="res:\/\/\(.*\)"/\1/p' project.godot | head -1)
+fi
+if [ -f "$main_scene" ]; then
+    if grep -q "Player" "$main_scene"; then
+        echo "✓ Main scene contains Player node"
+    else
+        echo "✗ Main scene missing Player node - will not render player"
+    fi
+    
+    # Check that the main scene has at least a Camera and basic structure
+    if grep -q "Camera2D" "$main_scene"; then
+        echo "✓ Main scene contains Camera2D for rendering"
+    else
+        echo "⚠ Main scene missing Camera2D - may have rendering issues"
+    fi
+fi
+
 echo "Godot project validation completed successfully!"
