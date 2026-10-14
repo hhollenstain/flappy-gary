@@ -114,6 +114,13 @@ echo "✓ Godot project imports successfully"
 # Final verification - test that main scene can be loaded without critical rendering errors
 echo "Verifying main scene loads with player character..."
 # Try to validate that the scene has proper structure for rendering
+# Import the scene and check for errors in headless mode
+import_output=$(run_godot --headless --path . --import 2>&1) || true
+if grep -Eq "SCRIPT ERROR:|Parse Error:|Failed to load|Couldn't detect whether to run" <<<"$import_output"; then
+    fail "Import produced errors - scene may not load properly"
+fi
+echo "✓ Scene imports without critical errors"
+
 main_scene=$(sed -n 's/^main_scene="res:\/\/\(.*\)"/\1/p' project.godot | head -1)
 if [ -z "$main_scene" ]; then
     main_scene=$(sed -n 's/^run\/main_scene="res:\/\/\(.*\)"/\1/p' project.godot | head -1)
@@ -122,14 +129,30 @@ if [ -f "$main_scene" ]; then
     if grep -q "Player" "$main_scene"; then
         echo "✓ Main scene contains Player node"
     else
-        echo "✗ Main scene missing Player node - will not render player"
+        fail "Main scene missing Player node - will not render player"
     fi
     
     # Check that the main scene has at least a Camera and basic structure
     if grep -q "Camera2D" "$main_scene"; then
         echo "✓ Main scene contains Camera2D for rendering"
     else
-        echo "⚠ Main scene missing Camera2D - may have rendering issues"
+        fail "Main scene missing Camera2D - cannot render game"
+    fi
+fi
+
+# Also check if there's a MainScene.tscn with Player and Camera2D
+if [ -f "MainScene.tscn" ]; then
+    if grep -q "Player" "MainScene.tscn" && grep -q "Camera2D" "MainScene.tscn"; then
+        echo "✓ MainScene.tscn contains Player node and Camera2D for rendering"
+    fi
+fi
+
+# Check pipes in scenes
+if grep -q "pipe" "scenes/pipe.tscn" 2>/dev/null; then
+    echo "✓ Pipe scene exists for obstacles"
+else
+    if [ -f "MainScene.tscn" ] && grep -q "pipe" "MainScene.tscn"; then
+        echo "✓ Pipe reference found in main scene for obstacles"
     fi
 fi
 

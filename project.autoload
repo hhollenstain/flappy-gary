@@ -1,0 +1,8 @@
+# Autoload scripts for Flappy Gary game
+# This file configures singletons that are available throughout the game
+
+# Player singleton for game state management
+player: "res://player.gd"
+
+# Main game singleton for controlling gameplay
+MainGame: "res://scripts/main_game.gd"

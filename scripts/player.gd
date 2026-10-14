@@ -1,33 +1,32 @@
-extends Sprite2D
+extends CharacterBody2D
 
 # Player physics and movement for Flappy Gary
-@export var gravity = 500.0
-@export var jump_force = -300.0
-@export var velocity = Vector2(0, 0)
+@export var gravity = 1500.0
+@export var jump_force = -500.0
+
+signal player_ready
+signal game_over
 
 func _ready():
-	# Initialize player physics
-	pass
+	velocity = Vector2(0, 0)
+	player_ready.emit()
 
-func _process(delta):
-	# Apply gravity
-	velocity.y += gravity * delta
+func _physics_process(delta):
+	# Apply gravity when not grounded
+	if not is_on_floor() and not is_on_ceiling():
+		velocity.y += gravity * delta
 	
-	# Update position
-	position += velocity * delta
+	# Move the player
+	move_and_slide()
 	
-	# Check for collisions with ground and ceiling (this is basic - real game would use collision shapes)
-	if position.y >= 600:  # Ground collision
-		position.y = 600
-		velocity.y = 0
+	# Check for ground collision (game over)
+	if is_on_floor() and velocity.y > 0:
+		game_over.emit()
 	
-	if position.y <= 0:  # Ceiling collision
-		position.y = 0
-		velocity.y = 0
+	# Check for ceiling collision (game over)
+	if is_on_ceiling() and velocity.y < 0:
+		game_over.emit()
 
 func jump():
+	# Replace vertical speed so every flap climbs, even after earlier falls.
 	velocity.y = jump_force
-
-func _input(event):
-	if event.is_action_just_pressed("ui_select"):
-		jump()
